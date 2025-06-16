@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Consumibles y Accesorios Snipe-IT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">Snipe-IT Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" data-section="dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="consumables">Consumibles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-section="accessories">Accesorios</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2>Dashboard</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Consumibles</h5>
+                            <p class="card-text">Total: <span id="consumablesTotal">0</span></p>
+                            <p class="card-text">Stock Bajo: <span id="consumablesLow">0</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Accesorios</h5>
+                            <p class="card-text">Total: <span id="accessoriesTotal">0</span></p>
+                            <p class="card-text">Stock Bajo: <span id="accessoriesLow">0</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Consumables Section -->
+        <div id="consumables" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Consumibles</h2>
+                <button class="btn btn-primary" id="addConsumableBtn">Agregar Consumible</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Cantidad</th>
+                            <th>Mínimo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="consumablesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Accessories Section -->
+        <div id="accessories" class="section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Accesorios</h2>
+                <button class="btn btn-primary" id="addAccessoryBtn">Agregar Accesorio</button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Cantidad</th>
+                            <th>Mínimo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accessoriesTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="itemModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Agregar Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="itemForm">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="itemName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Categoría ID</label>
+                            <input type="number" class="form-control" id="itemCategory" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="itemQty" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad Mínima</label>
+                            <input type="number" class="form-control" id="itemMin" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveItemBtn">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="index.ts"></script>
+</body>
+</html> 

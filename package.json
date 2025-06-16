@@ -1,0 +1,30 @@
+{
+  "name": "snipe-it-manager",
+  "version": "1.0.0",
+  "description": "Gestor de Consumibles y Accesorios para Snipe-IT",
+  "source": "src/index.html",
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "snipe-it",
+    "inventory",
+    "management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.7",
+    "bootstrap": "^5.3.2"
+  },
+  "devDependencies": {
+    "@parcel/transformer-typescript-tsc": "^2.11.0",
+    "@types/bootstrap": "^5.2.10",
+    "@types/node": "^20.11.19",
+    "buffer": "^6.0.3",
+    "parcel": "^2.11.0",
+    "typescript": "^5.8.3"
+  }
+}
