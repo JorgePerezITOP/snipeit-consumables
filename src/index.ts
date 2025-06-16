@@ -7,6 +7,7 @@ class App {
     private categories: Category[] = [];
     private consumablesMap: Record<number, Consumable> = {};
     private accessoriesMap: Record<number, Accessory> = {};
+    private editingItemId: number | null = null;
 
     constructor() {
         this.initializeEventListeners();
@@ -177,11 +178,13 @@ class App {
             `Agregar ${type === 'consumable' ? 'Consumible' : 'Accesorio'}`;
 
         if (item) {
+            this.editingItemId = item.id;
             (document.getElementById('itemName') as HTMLInputElement).value = item.name ?? '';
             (document.getElementById('itemNo') as HTMLInputElement).value = (item.item_no !== undefined && item.item_no !== null) ? item.item_no.toString() : '';
             (document.getElementById('itemQty') as HTMLInputElement).value = (item.qty !== undefined && item.qty !== null) ? item.qty.toString() : '';
             (document.getElementById('itemMin') as HTMLInputElement).value = (item.min_amt !== undefined && item.min_amt !== null) ? item.min_amt.toString() : '';
         } else {
+            this.editingItemId = null;
             form.reset();
         }
 
@@ -205,10 +208,18 @@ class App {
 
         try {
             if (this.currentSection === 'consumables') {
-                await SnipeITService.createConsumable(data);
+                if (this.editingItemId) {
+                    await SnipeITService.updateConsumable(this.editingItemId, data);
+                } else {
+                    await SnipeITService.createConsumable(data);
+                }
                 await this.loadConsumables();
             } else {
-                await SnipeITService.createAccessory(data);
+                if (this.editingItemId) {
+                    await SnipeITService.updateAccessory(this.editingItemId, data);
+                } else {
+                    await SnipeITService.createAccessory(data);
+                }
                 await this.loadAccessories();
             }
 
