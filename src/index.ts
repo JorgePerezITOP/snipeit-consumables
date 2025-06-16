@@ -5,6 +5,8 @@ import { Modal } from 'bootstrap';
 class App {
     private currentSection: string = 'dashboard';
     private categories: Category[] = [];
+    private consumablesMap: Record<number, Consumable> = {};
+    private accessoriesMap: Record<number, Accessory> = {};
 
     constructor() {
         this.initializeEventListeners();
@@ -76,12 +78,15 @@ class App {
             const response = await SnipeITService.getConsumables();
             const tbody = document.getElementById('consumablesTableBody')!;
             tbody.innerHTML = '';
+            this.consumablesMap = {};
 
             response.rows.forEach(consumable => {
+                this.consumablesMap[consumable.id] = consumable;
+                const categoryName = (consumable as any).category?.name || this.getCategoryName(consumable.category_id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${consumable.name}</td>
-                    <td>${this.getCategoryName(consumable.category_id)}</td>
+                    <td>${categoryName}</td>
                     <td>${consumable.qty}</td>
                     <td>${consumable.min_amt}</td>
                     <td>
@@ -104,12 +109,15 @@ class App {
             const response = await SnipeITService.getAccessories();
             const tbody = document.getElementById('accessoriesTableBody')!;
             tbody.innerHTML = '';
+            this.accessoriesMap = {};
 
             response.rows.forEach(accessory => {
+                this.accessoriesMap[accessory.id] = accessory;
+                const categoryName = (accessory as any).category?.name || this.getCategoryName(accessory.category_id);
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${accessory.name}</td>
-                    <td>${this.getCategoryName(accessory.category_id)}</td>
+                    <td>${categoryName}</td>
                     <td>${accessory.qty}</td>
                     <td>${accessory.min_amt}</td>
                     <td>
@@ -138,7 +146,14 @@ class App {
             btn.addEventListener('click', (e) => {
                 const id = (e.target as HTMLElement).dataset.id;
                 if (id) {
-                    this.editItem(type, parseInt(id));
+                    const item = type === 'consumables'
+                        ? this.consumablesMap[parseInt(id)]
+                        : this.accessoriesMap[parseInt(id)];
+                    if (item) {
+                        this.showItemModal(type === 'consumables' ? 'consumable' : 'accessory', item);
+                    } else {
+                        alert('No se encontró el item para editar.');
+                    }
                 }
             });
         });
@@ -162,10 +177,10 @@ class App {
             `Agregar ${type === 'consumable' ? 'Consumible' : 'Accesorio'}`;
 
         if (item) {
-            (document.getElementById('itemName') as HTMLInputElement).value = item.name;
-            (document.getElementById('itemCategory') as HTMLInputElement).value = item.category_id.toString();
-            (document.getElementById('itemQty') as HTMLInputElement).value = item.qty.toString();
-            (document.getElementById('itemMin') as HTMLInputElement).value = item.min_amt.toString();
+            (document.getElementById('itemName') as HTMLInputElement).value = item.name ?? '';
+            (document.getElementById('itemNo') as HTMLInputElement).value = (item.item_no !== undefined && item.item_no !== null) ? item.item_no.toString() : '';
+            (document.getElementById('itemQty') as HTMLInputElement).value = (item.qty !== undefined && item.qty !== null) ? item.qty.toString() : '';
+            (document.getElementById('itemMin') as HTMLInputElement).value = (item.min_amt !== undefined && item.min_amt !== null) ? item.min_amt.toString() : '';
         } else {
             form.reset();
         }
@@ -183,7 +198,7 @@ class App {
 
         const data = {
             name: (document.getElementById('itemName') as HTMLInputElement).value,
-            category_id: parseInt((document.getElementById('itemCategory') as HTMLInputElement).value),
+            item_no: (document.getElementById('itemNo') as HTMLInputElement).value,
             qty: parseInt((document.getElementById('itemQty') as HTMLInputElement).value),
             min_amt: parseInt((document.getElementById('itemMin') as HTMLInputElement).value)
         };
@@ -191,15 +206,15 @@ class App {
         try {
             if (this.currentSection === 'consumables') {
                 await SnipeITService.createConsumable(data);
-                this.loadConsumables();
+                await this.loadConsumables();
             } else {
                 await SnipeITService.createAccessory(data);
-                this.loadAccessories();
+                await this.loadAccessories();
             }
 
             const modal = document.getElementById('itemModal')!;
-            const modalInstance = Modal.getInstance(modal);
-            modalInstance?.hide();
+            const modalInstance = Modal.getInstance(modal) || new Modal(modal);
+            modalInstance.hide();
         } catch (error) {
             console.error('Error saving item:', error);
             alert('Error al guardar el item');
@@ -207,18 +222,7 @@ class App {
     }
 
     private async editItem(type: 'consumables' | 'accessories', id: number): Promise<void> {
-        try {
-            const item = type === 'consumables' 
-                ? await SnipeITService.getConsumables().then(r => r.rows.find(i => i.id === id))
-                : await SnipeITService.getAccessories().then(r => r.rows.find(i => i.id === id));
-
-            if (item) {
-                this.showItemModal(type === 'consumables' ? 'consumable' : 'accessory', item);
-            }
-        } catch (error) {
-            console.error('Error loading item:', error);
-            alert('Error al cargar el item');
-        }
+        alert('Función de edición optimizada, este método ya no se usa.');
     }
 
     private async deleteItem(type: 'consumables' | 'accessories', id: number): Promise<void> {

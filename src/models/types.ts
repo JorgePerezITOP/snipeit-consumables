@@ -4,6 +4,7 @@ export interface Item {
     category_id: number;
     qty: number;
     min_amt: number;
+    item_no?: string;
     created_at: string;
     updated_at: string;
 }
